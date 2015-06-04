@@ -25,7 +25,7 @@ toRevDigits n | n <= 0    = []
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther []         = []
 doubleEveryOther [x]        = [x]
-doubleEveryOther (x:(y:zs)) = [x] ++ [2*y] ++ doubleEveryOther zs
+doubleEveryOther (x:(y:zs)) = x : (2*y) : doubleEveryOther zs
 
 -- Exercise 4 -----------------------------------------
 
