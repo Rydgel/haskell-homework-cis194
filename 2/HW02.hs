@@ -23,11 +23,6 @@ colors = [Red, Green, Blue, Yellow, Orange, Purple]
 -- Exercise 1 -----------------------------------------
 
 -- Get the number of exact matches between the actual code and the guess
---exactMatches :: Code -> Code -> Int
---exactMatches [] _ = 0
---exactMatches (_ : _) [] = 0
---exactMatches (x:xs) (y:ys) = count + exactMatches xs ys
---  where count = if x == y then 1 else 0
 
 exactMatches :: Code -> Code -> Int
 exactMatches c1 c2 = length $ filter (uncurry (==)) $ zip c1 c2
