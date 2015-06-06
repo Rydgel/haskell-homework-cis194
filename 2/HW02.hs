@@ -54,7 +54,7 @@ isConsistent (Move c e a) c' = e == e' && a == a'
 -- Exercise 5 -----------------------------------------
 
 filterCodes :: Move -> [Code] -> [Code]
-filterCodes = undefined
+filterCodes = filter . isConsistent
 
 -- Exercise 6 -----------------------------------------
 
