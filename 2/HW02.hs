@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wall #-}
 module HW02 where
 
+-- http://www.seas.upenn.edu/~cis194/hw/02-lists.pdf
 
 -- Mastermind -----------------------------------------
 
@@ -54,12 +55,13 @@ isConsistent (Move c e a) c' = e == e' && a == a'
 -- Exercise 5 -----------------------------------------
 
 filterCodes :: Move -> [Code] -> [Code]
-filterCodes = undefined
+filterCodes = filter . isConsistent
 
 -- Exercise 6 -----------------------------------------
 
 allCodes :: Int -> [Code]
-allCodes = undefined
+allCodes 0 = []
+allCodes n = undefined
 
 -- Exercise 7 -----------------------------------------
 
