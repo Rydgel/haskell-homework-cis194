@@ -60,8 +60,10 @@ filterCodes = filter . isConsistent
 -- Exercise 6 -----------------------------------------
 
 allCodes :: Int -> [Code]
-allCodes 0 = []
-allCodes n = undefined
+allCodes 0 = [[]]
+allCodes n = concatMap (\x -> map (x:) (allCodes (n-1))) colors
+-- with list comprehension
+-- allCodes n = [ color : shorterCode | color <- colors, shorterCode <- allCodes (n - 1) ]
 
 -- Exercise 7 -----------------------------------------
 
