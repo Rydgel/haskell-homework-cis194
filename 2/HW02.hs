@@ -61,14 +61,18 @@ filterCodes = filter . isConsistent
 
 allCodes :: Int -> [Code]
 allCodes 0 = [[]]
-allCodes n = concatMap (\x -> map (x:) (allCodes (n-1))) colors
--- with list comprehension
--- allCodes n = [ color : shorterCode | color <- colors, shorterCode <- allCodes (n - 1) ]
+allCodes n = [ c : sc | c <- colors, sc <- allCodes (n - 1) ]
 
 -- Exercise 7 -----------------------------------------
 
 solve :: Code -> [Move]
-solve = undefined
+solve c = choose c $ allCodes 6
+
+choose :: Code -> [Code] -> [Move]
+choose _ [] = []
+choose c (x:xs) =
+    if x == c then [m] else m : choose c (filterCodes m xs)
+    where m = getMove c x
 
 -- Bonus ----------------------------------------------
 
