@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall #-}
-{-# LANGUAGE OverloadedStrings, RecordWildCards #-}
-module HW05 where
+{-# LANGUAGE OverloadedStrings #-}
+module Main where
 
 import Data.ByteString.Lazy (ByteString)
 import Data.Map.Strict (Map)
@@ -9,6 +9,9 @@ import Data.Bits (xor)
 
 import qualified Data.ByteString.Lazy as BS
 import qualified Data.Map.Strict as Map
+import           Control.Applicative ((<$>))
+import           Data.List
+import           Data.Function (on)
 
 import Parser
 
@@ -23,37 +26,56 @@ getSecret orgn modf = do
 -- Exercise 2 -----------------------------------------
 
 decryptWithKey :: ByteString -> FilePath -> IO ()
-decryptWithKey = undefined
+decryptWithKey k f = do
+  fileStr <- BS.readFile $ f ++ ".enc"
+  BS.writeFile f $ BS.pack [x `xor` y | (x, y) <- BS.zip fileStr (BS.cycle k)]
 
 -- Exercise 3 -----------------------------------------
 
 parseFile :: FromJSON a => FilePath -> IO (Maybe a)
-parseFile = undefined
+parseFile f = decode <$> BS.readFile f
 
 -- Exercise 4 -----------------------------------------
 
 getBadTs :: FilePath -> FilePath -> IO (Maybe [Transaction])
-getBadTs = undefined
+getBadTs v t = do
+  victims <- parseFile v :: IO (Maybe [TId])
+  transactions <- parseFile t :: IO (Maybe [Transaction])
+  let isElement (Just vs) tx = tid tx `elem` vs
+      isElement Nothing   _  = False
+  return $ filter (isElement victims) <$> transactions
 
 -- Exercise 5 -----------------------------------------
 
 getFlow :: [Transaction] -> Map String Integer
-getFlow = undefined
+getFlow =
+  foldr (\t m ->
+    Map.insertWith (-) (from t) (amount t) $
+    Map.insertWith (+) (to t) (amount t) m) Map.empty
 
 -- Exercise 6 -----------------------------------------
 
 getCriminal :: Map String Integer -> String
-getCriminal = undefined
+getCriminal m = fst $ Map.foldrWithKey (\x e r-> if e > snd r then (x,e) else r) ("",0) m
 
 -- Exercise 7 -----------------------------------------
 
 undoTs :: Map String Integer -> [TId] -> [Transaction]
-undoTs = undefined
+undoTs m tids = map makeT (zip3 sortedPayers sortedPayees tids)
+  where payers = Map.toList $ Map.filter (> 0) m
+        payees = Map.toList $ Map.filter (<= 0) m
+        sortedPayers = sortBy (flip compare `on` snd) payers
+        sortedPayees = sortBy (compare `on` snd) payees
+        makeT (py,pee,t) = Transaction { from = fst py
+                                       , to = fst pee
+                                       , amount = snd py - snd pee
+                                       , tid = t
+                                       }
 
 -- Exercise 8 -----------------------------------------
 
 writeJSON :: ToJSON a => FilePath -> a -> IO ()
-writeJSON = undefined
+writeJSON f x = BS.writeFile f (encode x)
 
 -- Exercise 9 -----------------------------------------
 
