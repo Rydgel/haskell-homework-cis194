@@ -1,4 +1,4 @@
-module Cards ( Deck(..)
+module Cards ( Deck
              , Card(..)
              , Suit(..)
              , Label(..)

@@ -7,7 +7,7 @@ import Cards
 
 import Control.Monad hiding (mapM, liftM)
 import Control.Monad.Random
-import Data.Functor ()
+import Data.Functor
 import Data.Monoid
 import Data.Vector (Vector, cons, (!), (!?), (//))
 import System.Random ()
@@ -108,25 +108,39 @@ qsortR v =
 
 -- Selection
 select :: Ord a => Int -> Vector a -> Rnd (Maybe a)
-select = undefined
+select i v
+  | V.null v = return Nothing
+  | otherwise = do
+      r <- getRandomR (0, V.length v - 1)
+      let (lt, p, gt) = partitionAt v r
+      case compare i (V.length lt) of
+        LT -> select i lt
+        EQ -> return $ Just p
+        GT -> select (i - V.length lt - 1) gt
 
 -- Exercise 10 ----------------------------------------
 
 allCards :: Deck
-allCards = undefined
+allCards = [Card y x | x <- suits, y <- labels]
 
 newDeck :: Rnd Deck
-newDeck =  undefined
+newDeck = shuffle allCards
 
 -- Exercise 11 ----------------------------------------
 
 nextCard :: Deck -> Maybe (Card, Deck)
-nextCard = undefined
+nextCard v
+  | V.null v  = Nothing
+  | otherwise = Just (V.head v, V.tail v)
 
 -- Exercise 12 ----------------------------------------
 
 getCards :: Int -> Deck -> Maybe ([Card], Deck)
-getCards = undefined
+getCards 0 d = Just ([], d)
+getCards n d = do
+  (c, d') <- nextCard d
+  (cs, d'') <- getCards (n - 1) d'
+  return (c : cs, d'')
 
 -- Exercise 13 ----------------------------------------
 

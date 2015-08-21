@@ -19,7 +19,7 @@ executable x7
   main-is:             HW07.hs
   -- other-modules:
   other-extensions:    MonadComprehensions, RecordWildCards
-  build-depends:       base >=4.8 && <4.9,
+  build-depends:       base >=4.7 && <4.9,
                        vector >=0.11 && <0.12,
                        random >=1.1 && <1.2,
                        MonadRandom
